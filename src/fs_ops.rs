@@ -4,18 +4,22 @@ Libreria que permite realizar todas las acciones que debe hacer la aplicacion.
 */
 
 use std::path::PathBuf;
-use fs_more::directory::{self, DirectoryMoveOptions};
+use axum::extract::path;
+use fs_more::{directory::{self, DirectoryMoveOptions}, error};
 
+/* Funciones para operaciones con directorios */
 pub fn create_new_dir(base_path: &PathBuf, dir_name: &str) -> Result<(), std::io::Error> {
     let path = base_path.join(dir_name);
 
     if path.is_dir() {
         println!("El directorio ya existe: {:?}", path);
+        return Err(std::io::Error::new(std::io::ErrorKind::AlreadyExists, "El directorio ya existe"));
     } else {
         println!("Creando el directorio: {:?}", path);
+        std::fs::create_dir(&path)?;
+        Ok(())
     }
-    std::fs::create_dir(&path)?;
-    Ok(())
+    
 }
 
 pub fn delete_dir(base_path: &PathBuf, dir_name: &str) -> Result<(), std::io::Error> {
@@ -41,11 +45,20 @@ pub fn change_dir_name(base_path: &PathBuf, old_name: &str, new_name: &str) -> R
     Ok(())
 }
 
-pub fn move_dir(base_path: &PathBuf, dir_name: &str, new_path: &PathBuf) -> Result<(), std::io::Error>{
-    let old_path = base_path.join(dir_name);
-    let new_full_path = new_path.join(dir_name);
-    directory::move_directory(&old_path, &new_full_path, DirectoryMoveOptions::default())
+pub fn move_dir(old_path: &PathBuf, dir_name: &str, new_path: &PathBuf) -> Result<(), std::io::Error>{
+    let path = old_path.join(dir_name);
+    println!("=============================Direccion: {:?}==================================", old_path);
+    
+        if !new_path.join(dir_name).is_dir(){
+            create_new_dir(&new_path, dir_name).unwrap();
+        }
+        println!("=============================Direccion: {:?}==================================", new_path);
+        directory::move_directory(&path, &new_path.join(dir_name), DirectoryMoveOptions::default())
         .map(|_finished| ())
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
-    Ok(())
-}
+        Ok(())
+    }
+   
+
+
+/* Funciones para operaciones con archivos */
