@@ -64,17 +64,28 @@ fn main() {
     let contenido = b"hola desde el cliente";
     let nombre = "archivo.txt";
 
-    let files: [(&str, &[u8]); 2] = [
-    ("archivo1.txt", b"hola"),
+    let files: [(&str, &[u8]); 1] = [
     ("archivo2.txt", b"mund"),
 ];
 
 
-    if let Err(e) = fs_ops::save_files(&root_path, &files) {
+    if let Err(e) = fs_ops::save_files(&root_path.join("test_dir").join("Carpeta de prueba"), &files) {
         eprintln!("Error guardando archivos: {}", e);
     }
 
+    if let Err(e) = fs_ops::delete_file(&root_path.join("test_dir").join("Carpeta de prueba"), "archivo1.txt") {
+        eprintln!("Error eliminando archivo: {}", e);
+    }
 
+    match fs_ops::list_files(&root_path.join("test_dir").join("Carpeta de prueba")) {
+        Ok(files) => {
+            println!("Archivos en el directorio:");
+            for file in files {
+                println!(" - {:?}", file.file_name().unwrap());
+            }
+        }
+        Err(e) => eprintln!("Error listando archivos: {}", e),
+    }
     /*match fs_ops::save_file(&root_path.join("test_dir").join("Carpeta de prueba"), nombre, contenido) {
         Ok(path) => println!("Archivo guardado en: {:?}", path),
         Err(e) => eprintln!("Error guardando archivo: {}", e),

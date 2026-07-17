@@ -59,7 +59,7 @@ pub fn move_dir(old_path: &PathBuf, dir_name: &str, new_path: &PathBuf) -> Resul
     }
 
 /* Funciones para operaciones con archivos */
-pub fn save_file(base_path: &PathBuf, file_name: &str, bytes_file: &[u8]) -> Result<PathBuf, std::io::Error> {
+pub fn save_file(base_path: &PathBuf, file_name: &str, file: &[u8]) -> Result<PathBuf, std::io::Error> {
     let path = base_path.join(file_name);
 
     if path.is_file() {
@@ -72,7 +72,7 @@ pub fn save_file(base_path: &PathBuf, file_name: &str, bytes_file: &[u8]) -> Res
         }
 
         println!("Guardando archivo: {:?}", path);
-        std::fs::write(&path, bytes_file)?;
+        std::fs::write(&path, file)?;
         Ok(path)
     }
 }
@@ -111,3 +111,20 @@ pub fn delete_file(base_path: &PathBuf, file_name: &str) -> Result<(), std::io::
     Ok(())
 }
 
+pub fn list_files(base_path: &PathBuf) -> Result<Vec<PathBuf>, std::io::Error> {
+    let mut files = Vec::new();
+
+    if base_path.is_dir() {
+        for entry in std::fs::read_dir(base_path)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_file() {
+                files.push(path);
+            }
+        }
+    } else {
+        println!("El directorio no existe: {:?}", base_path);
+    }
+
+    Ok(files)
+}
