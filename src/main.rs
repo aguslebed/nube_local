@@ -29,9 +29,15 @@ fn create_base_dir() -> Result<(), std::io::Error> {
 }
 
 fn main() {
-    if let Err(e) = create_base_dir() {
+    /*if let Err(e) = create_base_dir() {
         eprintln!("Error al crear el directorio base: {}", e);
+    }*/
+
+    match create_base_dir(){
+        Ok(()) => println!("Directorio base creado o ya existía."),
+        Err(e) => eprintln!("Error al crear el directorio base: {}", e),
     }
+
     let root_path = get_root_path().join(BASE_DIR_NAME);
 
     if let Err(e) = fs_ops::create_new_dir(&root_path, "test_dir") {
@@ -55,6 +61,24 @@ fn main() {
     } else {
         println!("Movimiento completado.");
     }
+    let contenido = b"hola desde el cliente";
+    let nombre = "archivo.txt";
+
+    let files: [(&str, &[u8]); 2] = [
+    ("archivo1.txt", b"hola"),
+    ("archivo2.txt", b"mund"),
+];
+
+
+    if let Err(e) = fs_ops::save_files(&root_path, &files) {
+        eprintln!("Error guardando archivos: {}", e);
+    }
+
+
+    /*match fs_ops::save_file(&root_path.join("test_dir").join("Carpeta de prueba"), nombre, contenido) {
+        Ok(path) => println!("Archivo guardado en: {:?}", path),
+        Err(e) => eprintln!("Error guardando archivo: {}", e),
+    }*/
 
     println!("Root path: {:?}", root_path.join("Carpeta de prueba"));
 }
