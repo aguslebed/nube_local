@@ -58,7 +58,6 @@ pub fn move_dir(old_path: &PathBuf, dir_name: &str, new_path: &PathBuf) -> Resul
         Ok(())
     }
 
-
 /* Funciones para operaciones con archivos */
 pub fn save_file(base_path: &PathBuf, file_name: &str, bytes_file: &[u8]) -> Result<PathBuf, std::io::Error> {
     let path = base_path.join(file_name);
@@ -101,3 +100,14 @@ pub fn save_files(base_path: &PathBuf, files: &[(&str, &[u8])]) -> Result<Vec<Pa
 
     Ok(saved_paths)
 }
+
+pub fn delete_file(base_path: &PathBuf, file_name: &str) -> Result<(), std::io::Error> {
+    let full_path = base_path.join(file_name);
+    if full_path.is_file() { 
+        std::fs::remove_file(&full_path)?; 
+    } else {
+        println!("El archivo no existe: {:?}", full_path);
+    }
+    Ok(())
+}
+
