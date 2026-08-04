@@ -318,6 +318,7 @@ dependencies = [
  "dirs",
  "fs-more",
  "serde",
+ "serde_json",
  "tokio",
 ]
 

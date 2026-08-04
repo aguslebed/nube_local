@@ -1,3 +1,4 @@
 
-pub mod fs_ops;
+pub mod api;
 pub mod errors;
+pub mod fs_ops;
