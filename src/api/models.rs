@@ -12,6 +12,21 @@ pub struct UploadFileRequest {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct BatchUploadFileRequest {
+    pub files: Vec<UploadFileRequest>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RenameDirectoryRequest {
+    pub new_name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct MoveDirectoryRequest {
+    pub destination: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct ListFilesQuery {
     pub dir: Option<String>,
 }

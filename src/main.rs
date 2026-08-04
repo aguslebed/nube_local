@@ -6,8 +6,7 @@ use nube_local::fs_ops;
 const BASE_DIR_NAME: &str = "nube-data";
 
 fn get_root_path() -> PathBuf {
-    dirs::home_dir()
-        .expect("no se pudo encontrar el home")
+    PathBuf::from("/")
 }
 
 fn create_base_dir() -> Result<(), AppError> {
